@@ -156,6 +156,9 @@ class WebSocketViewModel extends ChangeNotifier {
       Future.delayed(Duration(milliseconds: 500), () {
         message.status = MessageStatus.sent;
         notifyListeners();
+
+        // 🔥 ADD THIS (missing piece)
+        simulateOtherUserReply(message.text);
       });
     } catch (e) {
       message.status = MessageStatus.failed;

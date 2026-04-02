@@ -37,4 +37,7 @@
 
 ## 🧠 Description
 
-Developed a real-time chat application using Flutter and WebSocket, implementing MVVM architecture for scalable and maintainable code. The app includes multi-user simulation, smart replies, connection handling, retry mechanisms, and a modern chat interface with message states and timestamps.
+Developed a real-time chat application using Flutter and WebSocket, 
+implementing MVVM architecture for scalable and maintainable code. 
+The app includes multi-user simulation, smart replies, connection handling, retry mechanisms, 
+and a modern chat interface with message states and timestamps.
