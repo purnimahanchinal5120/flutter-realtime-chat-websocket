@@ -19,8 +19,10 @@
 
 ## 📱 Demo
 ### Chat UI
-<img src="assets/chat.png" width="300"/> 
-<img src="assets/retry.png" width="300"/>
+<p align="center">
+  <img src="assets/chat.png" width="300"/>
+  <img src="assets/retry.png" width="300"/>
+</p>
 
 (Add screenshots or GIF here)
 
