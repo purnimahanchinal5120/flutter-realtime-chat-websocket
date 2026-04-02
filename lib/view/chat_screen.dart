@@ -24,134 +24,179 @@ class ChatScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 2,
+        backgroundColor: Colors.blue,
         title: Row(
           children: [
-            Text("Chat"),
+            CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.person, color: Colors.blue),
+            ),
             SizedBox(width: 10),
-
-            if (vm.isConnecting)
-              Text("Connecting...", style: TextStyle(color: Colors.orange))
-            else
-              Icon(
-                Icons.circle,
-                size: 10,
-                color: vm.isConnected ? Colors.green : Colors.red,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Chat", style: TextStyle(fontSize: 16)),
+                Text(
+                  vm.isConnecting
+                      ? "Connecting..."
+                      : vm.isConnected
+                      ? "Online"
+                      : "Offline",
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              controller: scrollController,
-              itemCount: vm.messages.length,
-              itemBuilder: (context, index) {
-                final msg = vm.messages[index];
-
-                return Align(
-                  alignment: msg.isMe
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 10,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                      msg.isMe ? Colors.blue : Colors.grey.shade300,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
-                        bottomLeft: msg.isMe
-                            ? Radius.circular(16)
-                            : Radius.circular(0),
-                        bottomRight: msg.isMe
-                            ? Radius.circular(0)
-                            : Radius.circular(16),
+      body: Container(
+        color: Colors.grey.shade100,
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: vm.messages.length,
+                itemBuilder: (context, index) {
+                  final msg = vm.messages[index];
+                  final isMe = msg.senderId == vm.myUserId;
+                  return Align(
+                    alignment: isMe
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 10,
                       ),
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        if (msg.status == MessageStatus.failed) {
-                          vm.retryMessage(msg);
-                        }
-                      },
-                      child: Column(
-                        crossAxisAlignment:
-                        msg.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            msg.text,
-                            style: TextStyle(
-                              color: msg.isMe ? Colors.white : Colors.black,
-                            ),
+                      decoration: BoxDecoration(
+                        color: isMe ? Colors.blue : Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 3,
+                            offset: Offset(1, 2),
                           ),
-                          SizedBox(height: 4),
-
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                msg.time,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: msg.isMe ? Colors.white70 : Colors.black54,
-                                ),
-                              ),
-                              SizedBox(width: 5),
-
-                              if (msg.isMe) ...[
-                                if (msg.status == MessageStatus.sending)
-                                  Icon(Icons.access_time, size: 12, color: Colors.white70),
-
-                                if (msg.status == MessageStatus.sent)
-                                  Icon(Icons.check, size: 12, color: Colors.white70),
-
-                                if (msg.status == MessageStatus.failed)
-                                  Icon(Icons.refresh, size: 12, color: Colors.red),
-                              ],
-                            ],
-                          ),
-
-                          if (msg.status == MessageStatus.failed)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2),
-                              child: Text(
-                                "Tap to retry",
-                                style: TextStyle(fontSize: 10, color: Colors.red),
-                              ),
-                            ),
                         ],
                       ),
-                    )
-                  ),
-                );
-              },
-            ),
-          ),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (msg.status == MessageStatus.failed) {
+                            vm.retryMessage(msg);
+                          }
+                        },
+                        child: Column(
+                          crossAxisAlignment: isMe
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              msg.text,
+                              style: TextStyle(
+                                color: isMe ? Colors.white : Colors.black,
+                              ),
+                            ),
+                            SizedBox(height: 4),
 
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  decoration:
-                  InputDecoration(hintText: "Enter message"),
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.send),
-                onPressed: () {
-                  vm.sendMessage(controller.text);
-                  controller.clear();
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  msg.time,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: isMe
+                                        ? Colors.white70
+                                        : Colors.black54,
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+
+                                if (isMe) ...[
+                                  if (msg.status == MessageStatus.sending)
+                                    Icon(
+                                      Icons.access_time,
+                                      size: 12,
+                                      color: Colors.white70,
+                                    ),
+
+                                  if (msg.status == MessageStatus.sent)
+                                    Icon(
+                                      Icons.check,
+                                      size: 12,
+                                      color: Colors.white70,
+                                    ),
+
+                                  if (msg.status == MessageStatus.failed)
+                                    Icon(
+                                      Icons.refresh,
+                                      size: 12,
+                                      color: Colors.red,
+                                    ),
+                                ],
+                              ],
+                            ),
+
+                            if (msg.status == MessageStatus.failed)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(
+                                  "Tap to retry",
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
                 },
               ),
-            ],
-          ),
-        ],
+            ),
+
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              color: Colors.grey.shade100,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: TextField(
+                        controller: controller,
+                        decoration: InputDecoration(
+                          hintText: "Type a message...",
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  CircleAvatar(
+                    backgroundColor: Colors.blue,
+                    child: IconButton(
+                      icon: Icon(Icons.send, color: Colors.white),
+                      onPressed: () {
+                        vm.sendMessage(controller.text);
+                        controller.clear();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

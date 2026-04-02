@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -8,6 +10,8 @@ class WebSocketViewModel extends ChangeNotifier {
   bool isConnected = false;
   bool isConnecting = false;
   List<MessageModel> messages = [];
+  String myUserId = "user_1";
+  String otherUserId = "user_2";
 
   void connect() {
     try {
@@ -22,14 +26,7 @@ class WebSocketViewModel extends ChangeNotifier {
 
       channel.stream.listen(
             (message) {
-          messages.add(
-            MessageModel(
-              text: message.toString(),
-              isMe: false,
-              time: getCurrentTime(),
-            ),
-          );
-
+              print("Echo ignored: $message");
           notifyListeners();
         },
         onError: (error) {
@@ -37,14 +34,14 @@ class WebSocketViewModel extends ChangeNotifier {
           isConnected = false;
           notifyListeners();
 
-          reconnect(); // 🔥 retry
+          reconnect();
         },
         onDone: () {
           print("Disconnected");
           isConnected = false;
           notifyListeners();
 
-          reconnect(); // 🔥 retry
+          reconnect();
         },
       );
     } catch (e) {
@@ -61,7 +58,7 @@ class WebSocketViewModel extends ChangeNotifier {
 
     final message = MessageModel(
       text: text,
-      isMe: true,
+      senderId: myUserId,
       time: getCurrentTime(),
       status: MessageStatus.sending,
     );
@@ -69,26 +66,59 @@ class WebSocketViewModel extends ChangeNotifier {
     messages.add(message);
     notifyListeners();
 
-    // ❗ Check connection before sending
     if (!isConnected) {
       message.status = MessageStatus.failed;
       notifyListeners();
       return;
     }
 
-    try {
-      channel.sink.add(text);
+    channel.sink.add(text);
 
-      Future.delayed(Duration(milliseconds: 500), () {
-        message.status = MessageStatus.sent;
-        notifyListeners();
-      });
-    } catch (e) {
-      message.status = MessageStatus.failed;
+    Future.delayed(Duration(milliseconds: 500), () {
+      message.status = MessageStatus.sent;
       notifyListeners();
-    }
+
+      // 👇 simulate other user
+      simulateOtherUserReply(text);
+    });
   }
 
+  void simulateOtherUserReply(String text) {
+    String reply;
+
+    final lowerText = text.toLowerCase().trim();
+
+    if (lowerText == "hey" || lowerText == "hi") {
+      reply = "Hi 👋";
+    } else if (lowerText == "how are you?") {
+      reply = "I am fine, thank you! 😊 ";
+    } else if (lowerText == "how is your work going") {
+      reply = "It's going good!";
+    } else {
+      // fallback replies
+      final defaultReplies = [
+        "Okay 👍",
+        "Got it!",
+        "Nice!",
+        "Sounds good",
+      ];
+
+      reply = defaultReplies[Random().nextInt(defaultReplies.length)];
+    }
+
+    Future.delayed(Duration(seconds: 1), () {
+      messages.add(
+        MessageModel(
+          text: reply,
+          senderId: otherUserId,
+          time: getCurrentTime(),
+          status: MessageStatus.sent,
+        ),
+      );
+
+      notifyListeners();
+    });
+  }
   Future<void> reconnect() async {
     if (isConnecting) return;
 

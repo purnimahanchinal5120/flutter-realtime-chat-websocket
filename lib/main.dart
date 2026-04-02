@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => vm,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: ChatScreen(),
       ),
     );
