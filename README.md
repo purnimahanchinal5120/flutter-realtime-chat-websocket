@@ -19,10 +19,16 @@
 
 ## 📱 Demo
 ### Chat UI
-<p align="center">
-  <img src="assets/chat.png" width="300"/>
-  <img src="assets/retry.png" width="300"/>
-</p>
+<table>
+  <tr>
+    <td><img src="assets/chat.png" width="300"/></td>
+    <td><img src="assets/retry.png" width="300"/></td>
+  </tr>
+  <tr>
+    <td align="center">Chat UI</td>
+    <td align="center">Retry Feature</td>
+  </tr>
+</table>
 
 (Add screenshots or GIF here)
 
