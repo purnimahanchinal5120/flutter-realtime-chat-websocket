@@ -19,11 +19,11 @@
 
 ## 📱 Demo
 ### Chat UI
-![Chat](assets/chat.png)
+<img src="assets/chat.png" width="300"/>
 
 ### Retry Feature
 
-![Retry](assets/retry.png)
+<img src="assets/retry.png" width="300"/>
 
 (Add screenshots or GIF here)
 
