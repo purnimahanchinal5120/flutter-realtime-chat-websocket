@@ -18,6 +18,12 @@
 * Provider (State Management)
 
 ## 📱 Demo
+### Chat UI
+![Chat](assets/chat.png)
+
+### Retry Feature
+
+![Retry](assets/retry.png)
 
 (Add screenshots or GIF here)
 
