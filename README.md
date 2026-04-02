@@ -19,10 +19,7 @@
 
 ## 📱 Demo
 ### Chat UI
-<img src="assets/chat.png" width="300"/>
-
-### Retry Feature
-
+<img src="assets/chat.png" width="300"/> 
 <img src="assets/retry.png" width="300"/>
 
 (Add screenshots or GIF here)
